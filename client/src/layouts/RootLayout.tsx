@@ -3,7 +3,7 @@ import { Outlet } from "react-router";
 
 const RootLayout = () => {
   return (
-    <main className="w-screen h-screen flex-col-start-center px-[clamp(1rem,12vw,16rem)]">
+    <main className="w-screen h-screen flex-col-start-center overflow-x-hidden scrollbar-thin">
       <Outlet />
     </main>
   );
