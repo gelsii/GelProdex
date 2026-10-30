@@ -1,5 +1,5 @@
 import React from "react";
-import { Button } from "./button";
+import { Button } from "../ui/button";
 import { NavLink, useNavigate } from "react-router";
 import {
   Sheet,
@@ -69,7 +69,7 @@ const NavsHeader = React.memo(
           {navs.map((nav, index) => (
             <NavLink to={nav.url} key={index}>
               <li
-                className={`duration-300 items-center flex gap-2 justify-between transition-all hover:text-lightBlue ${styleLi}`}
+                className={`duration-300 items-center flex gap-2 justify-between transition-all ${styleLi}`}
               >
                 {postionIcon === "left" && nav.icon}
                 {nav.name}{" "}
@@ -127,7 +127,7 @@ const HeaderLandingPage = () => {
         </div>
 
         <div className="hidden items-center md:flex">
-          <NavsHeader postionIcon="left" />
+          <NavsHeader postionIcon="left" styleLi="hover:text-lightBlue" />
         </div>
 
         <div className="hidden items-center md:flex">
