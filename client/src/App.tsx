@@ -6,6 +6,8 @@ import LandingPageLayout from "./layouts/LandingPageLayout";
 import AuthLayout from "./layouts/AuthLayout";
 import SignIn from "./auth/components/SignIn";
 import Products from "./routes/landingPage/Products";
+import SignUp from "./auth/components/SignUp";
+import ProductsList from "./routes/dashboard/ProductsList";
 
 const App = createBrowserRouter([
   {
@@ -28,6 +30,12 @@ const App = createBrowserRouter([
       {
         path: "dashboard",
         element: <DashboardLayout />,
+        children: [
+          {
+            index: true,
+            element: <ProductsList />,
+          },
+        ],
       },
       {
         path: "auth",
@@ -36,6 +44,10 @@ const App = createBrowserRouter([
           {
             path: "signin",
             element: <SignIn />,
+          },
+          {
+            path: "signup",
+            element: <SignUp />,
           },
         ],
       },

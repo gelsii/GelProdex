@@ -1,0 +1,25 @@
+- SIGN IN AND SIGN UP USER
+
+signup - {
+    1: gagawa ako ng baseModel para sa request validation, and ang properties ay username, email, at password
+    2: sa controller ko naman ay dun ako mag response and i call function ang services
+    3. ang services naman, lagay ako ng parameter sa function para makuha ang fields
+    4. tas una ichecheck ko muna ang user na nalagay ng email at username if exist yon mag papasa ako ng error na 400 bad request kapag wala continue 
+    5: ihahash ko muna ang password gamit ang bcrypt, una gagawa ako ng salt mag generate salt ako from bcrypt then gagawa ako ng hashed password variable na nag hahash then ilalagay ko ang password field sa args na hinihingi doon sa bcrypt then convert ko siya into bytes. Encoding then ilalagay ko na yung salt na generate ko
+    6: gagawa ako ng dictionary na naglalaman ng properties na username, email at password, magiging password: hashed_password tas yung username at email ay yung dun sa parameter
+    7: try and except at insert kona ang nagawa kong dictionary
+    8: then if may error mag babato ako ng 500 internal server error or ang message ay something went wrong
+    9: tatawagin ko ang controller sa na create ko na route 
+}
+
+signin - {
+    1: gagawa ako ng models at ang validation ay yung email at password
+    2: ichecheck muna kung ang email ay nandun sa database if wala mag raise ng httpxception 401
+    3. then if meron kukunin ang user dun sa database
+    3: ichecheck yung password if tama gamit ang bcrypt yung orig password ay yung req field password then yung hashed password ay nasa database
+    4. return message successfully 200
+}
+
+
+- JWT TOKENS
+- REFRESH TOKEN AND ACCESS TOKEN

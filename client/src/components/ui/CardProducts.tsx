@@ -2,7 +2,6 @@ import React from "react";
 import {
   Card,
   CardAction,
-  CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
@@ -10,7 +9,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "./button";
 
-const CardProducts = () => {
+const CardProducts = React.memo(() => {
   return (
     <Card className=" w-full max-w-sm pt-0">
       <img
@@ -36,6 +35,6 @@ const CardProducts = () => {
       </CardFooter>
     </Card>
   );
-};
+});
 
 export default CardProducts;

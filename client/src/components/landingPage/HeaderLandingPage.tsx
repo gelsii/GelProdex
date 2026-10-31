@@ -26,11 +26,14 @@ const ButtonsHeader = React.memo(
       <div className={`flex gap-2 items-center ${className}`}>
         <Button
           className={`button-border-lightBlue ${styleButton}`}
-          onClick={() => navigate("/auth/signin")}
+          onClick={() => navigate("/auth/signin", { replace: true })}
         >
           Sign In
         </Button>
-        <Button className={`button-bg-lightBlue ${styleButton}`}>
+        <Button
+          className={`button-bg-lightBlue ${styleButton}`}
+          onClick={() => navigate("/auth/signup", { replace: true })}
+        >
           Get Started
         </Button>
       </div>
