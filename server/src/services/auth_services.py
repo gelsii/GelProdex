@@ -1,7 +1,14 @@
+from datetime import datetime, timedelta
+import os
+
 import bcrypt
-from fastapi import HTTPException, status, Depends
+from dotenv import load_dotenv
+from fastapi import HTTPException, Response, status, Depends
 from models.auth_models import SignInModels, SignUpModels
 from database import use as db
+from utils.token import generate_token
+
+load_dotenv()
 
 class AuthServices:
 
@@ -34,7 +41,7 @@ class AuthServices:
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Something went wrong. Please try again.")
 
     @staticmethod
-    def sign_in(fields_req: SignInModels):
+    def sign_in(fields_req: SignInModels, res: Response):
 
         EXCEPTION_UNAUTORIZED = HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Wrong email or password. Please check again.")
 
@@ -47,4 +54,15 @@ class AuthServices:
 
         if not is_match_password:
             raise EXCEPTION_UNAUTORIZED
+
+        expiration_date = datetime.now() + timedelta(days=float(os.getenv("REFRESH_TOKEN_EXPIRE_D")))
+        
+        payload = {
+            "_id": str(user_founded["_id"]),
+            "exp": expiration_date
+        }
+
+        refresh_token = generate_token(key=os.getenv("REFRESH_TOKEN_KEY"), algorithm=os.getenv("ALGORITHM_TOKENS"), payload=payload)
+
+        res.set_cookie(key="refresh_token", value=refresh_token["token"], httponly=True, secure=True, expires=str(expiration_date))
         

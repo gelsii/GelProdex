@@ -1,4 +1,4 @@
-from fastapi import Depends
+from fastapi import Depends, Response
 from models.auth_models import SignUpModels
 from services.auth_services import AuthServices
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
@@ -16,13 +16,13 @@ class AuthControllers:
         return { "message": "Successfully Sign Up!" }
 
     @staticmethod
-    def sign_in(credentials: HTTPBasicCredentials = Depends(sign_in_security)):
+    def sign_in(response: Response, credentials: HTTPBasicCredentials = Depends(sign_in_security)):
 
         fields = {
             "email": credentials.username,
             "password": credentials.password
         }
 
-        services.sign_in(fields_req=fields)
+        services.sign_in(fields_req=fields, res=response)
 
         return { "message": "Successfully Sign in! You can now access dashboard!" }

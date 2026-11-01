@@ -21,6 +21,15 @@ authenticate token - {
     7. return decoded token
 }
 
+access token - {
+    1: gagawa ako ng controller nito at services
+    2: sa controller tatawagin ko ang function ng services na nag rereturn ng access token at mag rereturn ako ng response 200  
+    3: sa services ichecheck ko muna ang user if meron siyang refresh token gamit ang fastapi security APIKEYCOOKIE kapag meron continue kapag wala raise httpxception 403
+    4: then authenticate ang token gamit ang na create na function sa utils 
+    5: then mag gegenerate ako ng token and ang expiration ay 15mins gamit din ang datetime at timedelta
+    6: return yung na generate na token
+}
+
 - SIGN IN AND SIGN UP USER
 
 signup - {
@@ -46,5 +55,4 @@ signin - {
     7: mag re-response ako ng cookie gamit ang fastapi response set cookie, httponly and secure true and yung expiration date yung na create ko na var
     8. return message successfully 200
 }
-
 
