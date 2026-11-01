@@ -1,3 +1,26 @@
+- JWT TOKENS
+- REFRESH TOKEN AND ACCESS TOKEN
+
+- utils
+
+generate token - {
+    1: mag ddefine ako ng function 
+    2: then add ako ng parameter na key, algorithim and payload
+    3: gagawa ako ng variable na pingalan na generatedtoken sa loob ng function
+    4: then ang value is yung sa na encode ng jwt token
+    5. then return token
+}
+
+authenticate token - {
+    1: mag ddefine ako ng function
+    2: add ako ng parameter, key, token, and algorithims
+    3. then mag try and except ako at ang try ay yung decoding a token gamit ang jwt
+    4. then sa except ichecheck yung mga invalid token, expire token, invalid signature token and internal server error
+    5. gagawa ako ng variable sa taas ng try and except para sa httpxception 
+    6. then mag raise ako ng httpxception kada except
+    7. return decoded token
+}
+
 - SIGN IN AND SIGN UP USER
 
 signup - {
@@ -17,9 +40,11 @@ signin - {
     2: ichecheck muna kung ang email ay nandun sa database if wala mag raise ng httpxception 401
     3. then if meron kukunin ang user dun sa database
     3: ichecheck yung password if tama gamit ang bcrypt yung orig password ay yung req field password then yung hashed password ay nasa database
-    4. return message successfully 200
+    4: gagawa ako ng var para sa expiration date ng refresh token gamit ang datetime at timedelta
+    5: gagawa ako ng dictionary para sa payload andun ang id ng user at expiration date ng token
+    6: mag gegenerate ako ng token which is refresh token gamit ang ginawa kong utils token
+    7: mag re-response ako ng cookie gamit ang fastapi response set cookie, httponly and secure true and yung expiration date yung na create ko na var
+    8. return message successfully 200
 }
 
 
-- JWT TOKENS
-- REFRESH TOKEN AND ACCESS TOKEN

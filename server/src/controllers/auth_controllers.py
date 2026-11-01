@@ -1,8 +1,10 @@
-from fastapi import HTTPException, status
-from models.auth_models import SignInModels, SignUpModels
+from fastapi import Depends
+from models.auth_models import SignUpModels
 from services.auth_services import AuthServices
+from fastapi.security import HTTPBasic, HTTPBasicCredentials
 
 services = AuthServices()
+sign_in_security = HTTPBasic()
 
 class AuthControllers:
 
@@ -14,7 +16,12 @@ class AuthControllers:
         return { "message": "Successfully Sign Up!" }
 
     @staticmethod
-    def sign_in(fields: SignInModels):
+    def sign_in(credentials: HTTPBasicCredentials = Depends(sign_in_security)):
+
+        fields = {
+            "email": credentials.username,
+            "password": credentials.password
+        }
 
         services.sign_in(fields_req=fields)
 

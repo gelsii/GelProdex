@@ -38,12 +38,12 @@ class AuthServices:
 
         EXCEPTION_UNAUTORIZED = HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Wrong email or password. Please check again.")
 
-        user_founded = db.users_collection.find_one({ "email": fields_req.email })
+        user_founded = db.users_collection.find_one({ "email": fields_req["email"] })
 
         if user_founded == None:
             raise EXCEPTION_UNAUTORIZED
 
-        is_match_password = bcrypt.checkpw(password=fields_req.password.encode(), hashed_password=user_founded["password"])
+        is_match_password = bcrypt.checkpw(password=fields_req["password"].encode(), hashed_password=user_founded["password"])
 
         if not is_match_password:
             raise EXCEPTION_UNAUTORIZED

@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from database.use import users_collection
 from routes.auth_routes import auth_router
+import jwt
 
 app = FastAPI()
 
