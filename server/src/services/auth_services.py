@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 from fastapi import HTTPException, Response, status, Depends
 from models.auth_models import SignInModels, SignUpModels
 from database import use as db
-from utils.token import generate_token
+from utils.token import authenticate_token, generate_token
 
 load_dotenv()
 
@@ -65,4 +65,16 @@ class AuthServices:
         refresh_token = generate_token(key=os.getenv("REFRESH_TOKEN_KEY"), algorithm=os.getenv("ALGORITHM_TOKENS"), payload=payload)
 
         res.set_cookie(key="refresh_token", value=refresh_token["token"], httponly=True, secure=True, expires=str(expiration_date))
+
+
+    @staticmethod
+    def get_access_token(refresh_token: str):
+
+        authenticate_token(token=refresh_token, key=os.getenv("REFRESH_TOKEN_KEY"), algorithms=[os.getenv("ALGORITHM_TOKENS")])
+
+        access_token = generate_token(key=os.getenv("ACCESS_TOKEN_KEY"), algorithm=os.getenv("ALGORITHM_TOKENS"), payload={
+            "exp": datetime.now() + timedelta(minutes=float(os.getenv("ACCESS_TOKEN_EXPIRE_M")))
+        })
+
+        return access_token
         
