@@ -77,4 +77,8 @@ class AuthServices:
         })
 
         return access_token
+
+    @staticmethod
+    def authenticate_access_token(token: str):
+        authenticate_token(token=token, key=os.getenv("ACCESS_TOKEN_KEY"), algorithms=[os.getenv("ALGORITHM_TOKENS")])
         

@@ -1,11 +1,12 @@
 from fastapi import Depends, Response
 from models.auth_models import SignUpModels
 from services.auth_services import AuthServices
-from fastapi.security import HTTPBasic, HTTPBasicCredentials, APIKeyCookie
+from fastapi.security import HTTPBasic, HTTPBasicCredentials, APIKeyCookie, HTTPBearer, HTTPAuthorizationCredentials
 
 services = AuthServices()
 sign_in_security = HTTPBasic()
 cookie_security = APIKeyCookie(name="refresh_token")
+bearer_security = HTTPBearer()
 
 class AuthControllers:
 
@@ -34,3 +35,10 @@ class AuthControllers:
         access_token = services.get_access_token(refresh_token=refresh_token)
 
         return { "access_token": access_token["token"] }
+
+    @staticmethod
+    def authenticate_access_token(access_token: HTTPAuthorizationCredentials = Depends(bearer_security)):
+
+        services.authenticate_access_token(token=access_token.credentials)
+
+        return { "message": "Welcome to dashboard!" }
