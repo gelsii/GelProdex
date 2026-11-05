@@ -10,3 +10,6 @@ client = MongoClient(os.getenv("DATABASE_URI"))
 database = client.get_database(name="prodex")
 
 users_collection = database.get_collection(name="users")
+
+
+products_collection = database.get_collection(name="products_users")

@@ -24,7 +24,7 @@ const stateReducer = (state: states, action: actions) => {
     case "setIsErrorTrue":
       return { ...state, isError: true };
     case "setIsSuccessTrue":
-      return { ...state, isSuccessTrue: true };
+      return { ...state, isSuccess: true };
     case "setIsLoadingTrue":
       return { ...state, isLoading: true };
     default:

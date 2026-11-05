@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 from fastapi import HTTPException, Response, status, Depends
 from models.auth_models import SignInModels, SignUpModels
 from database import use as db
+from utils.internal_server_message import INTERNAL_SERVER_ERROR_MESSAGE
 from utils.token import authenticate_token, generate_token
 
 load_dotenv()
@@ -38,7 +39,7 @@ class AuthServices:
         try: 
             db.users_collection.insert_one(data_user)
         except Exception as error:
-            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Something went wrong. Please try again.")
+            raise INTERNAL_SERVER_ERROR_MESSAGE
 
     @staticmethod
     def sign_in(fields_req: SignInModels, res: Response):

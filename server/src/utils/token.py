@@ -1,5 +1,6 @@
 import jwt
 from fastapi import HTTPException, status
+from utils.internal_server_message import INTERNAL_SERVER_ERROR_MESSAGE
 
 def generate_token(key: str, payload: dict, algorithm: str):
     generated_token = jwt.encode(payload=payload, key=key, algorithm=algorithm)
@@ -20,6 +21,6 @@ def authenticate_token(token: str, key: str, algorithms: list[str]):
     except jwt.ExpiredSignatureError:
         raise FORBIDDEN_EXCEPTION
     except Exception as error:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Something went wrong. Please try again.")
+        raise INTERNAL_SERVER_ERROR_MESSAGE
 
     return decoded_token
