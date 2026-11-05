@@ -5,7 +5,7 @@ from fastapi.security import HTTPBasic, HTTPBasicCredentials, APIKeyCookie, HTTP
 
 services = AuthServices()
 sign_in_security = HTTPBasic()
-cookie_security = APIKeyCookie(name="refresh_token")
+cookie_security = APIKeyCookie(name="access")
 bearer_security = HTTPBearer()
 
 class AuthControllers:
@@ -37,8 +37,8 @@ class AuthControllers:
         return { "access_token": access_token["token"] }
 
     @staticmethod
-    def authenticate_access_token(access_token: HTTPAuthorizationCredentials = Depends(bearer_security)):
+    def authenticate_access_token(access_token: str = Depends(cookie_security)):
 
-        services.authenticate_access_token(token=access_token.credentials)
+        services.authenticate_access_token(token=access_token)
 
         return { "message": "Welcome to dashboard!" }

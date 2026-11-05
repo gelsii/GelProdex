@@ -35,7 +35,10 @@ const SignIn = () => {
       username: formSignInData.email,
       password: formSignInData.password,
     },
-    onSuccess: (data: messageResponse) => toast.success(data.message),
+    onSuccess: (data: messageResponse) => {
+      toast.success(data.message);
+      navigate("/dashboard", { replace: true });
+    },
     onError: (error: AxiosError<errorMessageResponse>) =>
       toast.error(error.response?.data.detail),
   });

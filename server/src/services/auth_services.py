@@ -55,16 +55,16 @@ class AuthServices:
         if not is_match_password:
             raise EXCEPTION_UNAUTORIZED
 
-        expiration_date = datetime.now() + timedelta(days=float(os.getenv("REFRESH_TOKEN_EXPIRE_D")))
+        expiration_date = datetime.now() + timedelta(days=float(os.getenv("ACCESS_TOKEN_EXPIRE_M")))
         
         payload = {
             "_id": str(user_founded["_id"]),
             "exp": expiration_date
         }
 
-        refresh_token = generate_token(key=os.getenv("REFRESH_TOKEN_KEY"), algorithm=os.getenv("ALGORITHM_TOKENS"), payload=payload)
+        access_token = generate_token(key=os.getenv("ACCESS_TOKEN_KEY"), algorithm=os.getenv("ALGORITHM_TOKENS"), payload=payload)
 
-        res.set_cookie(key="refresh_token", value=refresh_token["token"], httponly=True, secure=True, expires=str(expiration_date))
+        res.set_cookie(key="access", value=access_token["token"], httponly=True, secure=True, expires=str(expiration_date))
 
 
     @staticmethod
