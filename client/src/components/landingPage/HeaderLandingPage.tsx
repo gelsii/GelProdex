@@ -67,12 +67,14 @@ const NavsHeader = React.memo(
     postionIcon?: "right" | "left";
   }) => {
     return (
-      <nav className={`${styleNav}`}>
-        <ul className={`flex gap-12 cursor-default ${styleUl}`}>
+      <nav className={`${styleNav} h-full`}>
+        <ul
+          className={`flex gap-12 cursor-default h-full items-center justify-center ${styleUl}`}
+        >
           {navs.map((nav, index) => (
             <NavLink to={nav.url} key={index}>
               <li
-                className={`duration-300 items-center flex gap-2 justify-between transition-all ${styleLi}`}
+                className={`duration-300 w-full items-center h-full flex gap-2 justify-center transition-all ${styleLi}`}
               >
                 {postionIcon === "left" && nav.icon}
                 {nav.name}{" "}

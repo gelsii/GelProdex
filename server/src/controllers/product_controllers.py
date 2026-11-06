@@ -14,3 +14,5 @@ class ProductControllers:
         products = services.get_user_products(user_id=user["_id"])
 
         return { "products": products }
+
+    

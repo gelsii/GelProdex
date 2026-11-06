@@ -1,11 +1,14 @@
+import os
+
 from fastapi import Depends, Response
 from models.auth_models import SignUpModels
 from services.auth_services import AuthServices
 from fastapi.security import HTTPBasic, HTTPBasicCredentials, APIKeyCookie, HTTPBearer, HTTPAuthorizationCredentials
+from utils.token import authenticate_token
 
 services = AuthServices()
 sign_in_security = HTTPBasic()
-cookie_security = APIKeyCookie(name="access")
+cookie_security = APIKeyCookie(name="access", auto_error=False)
 bearer_security = HTTPBearer()
 
 class AuthControllers:
@@ -37,8 +40,18 @@ class AuthControllers:
         return { "access_token": access_token["token"] }
 
     @staticmethod
-    def authenticate_access_token(access_token: str = Depends(cookie_security)):
-
-        services.authenticate_access_token(token=access_token)
+    def authenticate_access_token(access_token: HTTPAuthorizationCredentials = Depends(bearer_security)):
+        print(access_token.credentials)
+        services.authenticate_access_token(token=access_token.credentials)
 
         return { "message": "Welcome to dashboard!" }
+
+    @staticmethod
+    def authenticate_auth_page(token: str = Depends(cookie_security)):
+
+        try:
+            authenticate_token(token=token, key=os.getenv("REFRESH_TOKEN_KEY"), algorithms=[os.getenv("ALGORITHM_TOKENS")])
+        except Exception: 
+            return { "isLogged": False }
+        
+        return { "isLogged": True }

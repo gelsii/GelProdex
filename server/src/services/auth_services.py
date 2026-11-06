@@ -56,26 +56,29 @@ class AuthServices:
         if not is_match_password:
             raise EXCEPTION_UNAUTORIZED
 
-        expiration_date = datetime.now() + timedelta(days=float(os.getenv("ACCESS_TOKEN_EXPIRE_M")))
+        expiration_date = datetime.now() + timedelta(days=float(os.getenv("REFRESH_TOKEN_EXPIRE_D")))
         
         payload = {
             "_id": str(user_founded["_id"]),
             "exp": expiration_date
         }
 
-        access_token = generate_token(key=os.getenv("ACCESS_TOKEN_KEY"), algorithm=os.getenv("ALGORITHM_TOKENS"), payload=payload)
+        refresh_token = generate_token(key=os.getenv("REFRESH_TOKEN_KEY"), algorithm=os.getenv("ALGORITHM_TOKENS"), payload=payload)
 
-        res.set_cookie(key="access", value=access_token["token"], httponly=True, secure=True, expires=str(expiration_date))
+        res.set_cookie(key="access", value=refresh_token["token"], httponly=True, secure=True, expires=str(expiration_date))
 
 
     @staticmethod
     def get_access_token(refresh_token: str):
 
-        authenticate_token(token=refresh_token, key=os.getenv("REFRESH_TOKEN_KEY"), algorithms=[os.getenv("ALGORITHM_TOKENS")])
+        decoded_token = authenticate_token(token=refresh_token, key=os.getenv("REFRESH_TOKEN_KEY"), algorithms=[os.getenv("ALGORITHM_TOKENS")])
 
         access_token = generate_token(key=os.getenv("ACCESS_TOKEN_KEY"), algorithm=os.getenv("ALGORITHM_TOKENS"), payload={
+            "_id": decoded_token["_id"],
             "exp": datetime.now() + timedelta(minutes=float(os.getenv("ACCESS_TOKEN_EXPIRE_M")))
         })
+
+        print(access_token)
 
         return access_token
 

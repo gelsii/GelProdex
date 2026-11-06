@@ -1,3 +1,4 @@
+import { tokenContext } from "@/contexts/token";
 import mainApiServices from "@/services/main.api.services";
 import axios from "axios";
 import React from "react";
@@ -61,7 +62,9 @@ export const useFetch = <D, E>({
   });
 
   const [data, setData] = React.useState<D>();
-  const [error, setError] = React.useState<E | string>();
+  const [error, setError] = React.useState<E>();
+
+  const token = React.useContext(tokenContext);
 
   React.useEffect(() => {
     dispatch({ type: "setIsLoadingTrue" });
@@ -73,6 +76,9 @@ export const useFetch = <D, E>({
           method,
           data: dataAxios,
           params: queries,
+          headers: {
+            Authorization: `Bearer ${token?.userToken}`,
+          },
         });
 
         dispatch({ type: "setIsSuccessTrue" });
@@ -82,20 +88,25 @@ export const useFetch = <D, E>({
         if (onSuccess) onSuccess(response.data);
       } catch (error: any) {
         dispatch({ type: "setIsErrorTrue" });
+        dispatch({ type: "setIsLoadingFalse" })
 
-        if (axios.isAxiosError(error)) setError(error.response?.data.message);
-        else setError("Something went wrong. Please try again.");
+        // if (axios.isAxiosError(error)) {
+
+        //   if(error.name) setError(error.code);
+        // }
+        // else setError("Something went wrong. Please try again.");
+
+        setError(error)
 
         if (onError) onError(error);
       }
     };
 
     fetchAPI();
-  }, [queries, url, dataAxios, method, onError, onSuccess]);
+  }, [queries, url, dataAxios, method, onError, onSuccess, token]);
 
   return { ...state, data, error };
 };
-
 
 export const useOnFetch = <D, E>({
   dataAxios,
@@ -115,6 +126,8 @@ export const useOnFetch = <D, E>({
   const [data, setData] = React.useState<D>();
   const [error, setError] = React.useState<E | string>();
 
+  const token = React.useContext(tokenContext);
+
   const fetchAPI = React.useCallback(async () => {
     dispatch({ type: "setIsLoadingTrue" });
 
@@ -125,6 +138,9 @@ export const useOnFetch = <D, E>({
         data: dataAxios,
         params: queries,
         auth: authData,
+        headers: {
+          Authorization: `Bearer ${token?.userToken}`,
+        },
       });
 
       dispatch({ type: "setIsSuccessTrue" });

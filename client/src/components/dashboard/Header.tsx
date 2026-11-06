@@ -23,9 +23,14 @@ const Header = () => {
         </h1>
 
         <nav>
-          <ul className="flex gap-8 ">
+          <ul className="flex gap-8 items-center h-full ">
             {navs.map((nav, index) => (
-              <li key={index} className="cursor-default font-heading transition-all duration-300 hover:text-lightBlue">{nav.name}</li>
+              <li
+                key={index}
+                className="cursor-default font-heading transition-all duration-300 hover:text-lightBlue"
+              >
+                {nav.name}
+              </li>
             ))}
           </ul>
         </nav>

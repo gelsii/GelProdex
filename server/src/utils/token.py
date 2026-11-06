@@ -10,6 +10,9 @@ def generate_token(key: str, payload: dict, algorithm: str):
 def authenticate_token(token: str, key: str, algorithms: list[str]):
     FORBIDDEN_EXCEPTION = HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You don't have access to this page.")
 
+    if token == None:
+        raise FORBIDDEN_EXCEPTION
+
     try:
         decoded_token = jwt.decode(jwt=token, key=key, algorithms=algorithms)
     except jwt.InvalidKeyError:
@@ -21,6 +24,7 @@ def authenticate_token(token: str, key: str, algorithms: list[str]):
     except jwt.ExpiredSignatureError:
         raise FORBIDDEN_EXCEPTION
     except Exception as error:
+        print(error)
         raise INTERNAL_SERVER_ERROR_MESSAGE
 
     return decoded_token
