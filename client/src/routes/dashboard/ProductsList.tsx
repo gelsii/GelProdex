@@ -12,6 +12,24 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import ErrorFetching from "@/components/dashboard/ErrorFetching";
+import { useFetch } from "@/hooks/useFetch";
+import { tokenContext } from "@/contexts/token";
+import {
+  type productsResponseData,
+  type errorMessageResponse,
+  type productData,
+} from "@/types/messageResponseType";
+import type { AxiosError } from "axios";
+import ErrorAuthorized from "@/components/dashboard/ErrorAuthorized";
 
 const SearchProductsList = React.memo(() => {
   return (
@@ -24,48 +42,91 @@ const SearchProductsList = React.memo(() => {
   );
 });
 
-const ProductsList = () => {
+const CardProductList = React.memo((props: productData) => {
   return (
-    <section className="w-full grid gap-4 h-full py-8">
-      <div className="w-full flex justify-between items-center">
-        <Label>Products:</Label>
-        <SearchProductsList />
-      </div>
-      <Table >
-        <TableCaption>A list of your products.</TableCaption>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-25">Name</TableHead>
-            <TableHead>Amount</TableHead>
-            <TableHead>Description</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {Array.from({ length: 2 }).map((_, index) => (
-            <TableRow key={index}>
-              <TableCell className="font-medium">INV001</TableCell>
-              <TableCell>$ 800099999</TableCell>
-              <TableCell>
-                Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                Similique velit illum saepe aut incidunt repellat officiis est
-                cum animi! Autem ex minima, enim perspiciatis obcaecati eius eos
-                mollitia nostrum quae?Lorem ipsum dolor sit amet consectetur
-                adipisicing elit. Asperiores rem doloribus, veniam consectetur
-                nisi optio atque architecto quam magni natus eveniet facere
-                minus hic, sequi dolor maxime! Magnam, sint impedit! Lorem ipsum
-                dolor sit amet consectetur adipisicing elit. Natus eum dolores
-                ipsa nesciunt nihil consectetur animi ex optio a, nisi, sapiente
-                vitae tempore maxime exercitationem fugit iusto ab quisquam id.
-                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Fugiat
-                voluptas rem, possimus odit deleniti esse libero, dolorum illum
-                dignissimos enim ipsum omnis dolores est similique quibusdam
-                quod dolore, sapiente saepe.
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </section>
+    <Card className="w-full max-w-sm shadow-2xl mb-4">
+      <CardHeader>
+        <img
+          src={props.url_image}
+          alt=""
+          className="w-full h-full rounded-lg"
+        />
+      </CardHeader>
+      <CardContent>
+        <CardTitle>{props.name}</CardTitle>
+        <CardTitle className="my-2">${props.price}</CardTitle>
+
+        <CardDescription>{props.description}</CardDescription>
+      </CardContent>
+      <CardFooter>
+        <Button variant={"destructive"} className={"w-full"}>
+          Delete
+        </Button>
+      </CardFooter>
+    </Card>
+  );
+});
+
+const ProductsList = () => {
+  const token = React.useContext(tokenContext);
+
+  const { data, isLoading, isSuccess, isError, error } = useFetch<
+    productsResponseData,
+    AxiosError<errorMessageResponse>
+  >({
+    url: "/products/user",
+    method: "GET",
+    authorization: `Bearer ${token?.userToken}`,
+  });
+  return (
+    <>
+      {isSuccess && (
+        <section className="w-full grid  gap-4 h-full py-8">
+          <div className="w-full flex justify-between items-center">
+            <Label>Products:</Label>
+            <SearchProductsList />
+          </div>
+
+          <div className="hidden lg:flex ">
+            <Table>
+              <TableCaption>A list of your products.</TableCaption>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-25">Name</TableHead>
+                  <TableHead>Amount</TableHead>
+                  <TableHead>Description</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {data?.products.map((product, index) => (
+                  <TableRow key={index}>
+                    <TableCell className="font-medium">
+                      {product.name}
+                    </TableCell>
+                    <TableCell>$ {product.price}</TableCell>
+                    <TableCell>{product.description}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+
+          <div className="place-items-center auto-cols-auto sm:columns-2 lg:hidden">
+            {data?.products.map((product, index) => (
+              <CardProductList key={index} {...product} />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {isLoading && <h1>Loading data...</h1>}
+
+      {isError && (
+        <div className="w-full h-full flex justify-center items-center">
+          <ErrorAuthorized />
+        </div>
+      )}
+    </>
   );
 };
 

@@ -8,6 +8,8 @@ import SignIn from "./auth/components/SignIn";
 import Products from "./routes/landingPage/Products";
 import SignUp from "./auth/components/SignUp";
 import ProductsList from "./routes/dashboard/ProductsList";
+import CreateProduct from "./routes/dashboard/CreateProduct";
+import ErrorAuthorized from "./components/dashboard/ErrorAuthorized";
 
 const App = createBrowserRouter([
   {
@@ -34,6 +36,10 @@ const App = createBrowserRouter([
           {
             index: true,
             element: <ProductsList />,
+          },
+          {
+            path: "createProduct",
+            element: <CreateProduct />,
           },
         ],
       },

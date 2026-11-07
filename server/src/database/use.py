@@ -13,3 +13,5 @@ users_collection = database.get_collection(name="users")
 
 
 products_collection = database.get_collection(name="products_users")
+
+tokens_revoke_collection = database.get_collection(name="tokens_revoke")

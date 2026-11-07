@@ -71,18 +71,41 @@ class AuthServices:
     @staticmethod
     def get_access_token(refresh_token: str):
 
+        founded_token = db.tokens_revoke_collection.find_one({ "token": refresh_token })
+
+        if founded_token != None:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="You don't have access to this page.")
+
         decoded_token = authenticate_token(token=refresh_token, key=os.getenv("REFRESH_TOKEN_KEY"), algorithms=[os.getenv("ALGORITHM_TOKENS")])
 
         access_token = generate_token(key=os.getenv("ACCESS_TOKEN_KEY"), algorithm=os.getenv("ALGORITHM_TOKENS"), payload={
             "_id": decoded_token["_id"],
-            "exp": datetime.now() + timedelta(minutes=float(os.getenv("ACCESS_TOKEN_EXPIRE_M")))
+            "exp": datetime.utcnow() + timedelta(seconds=1)
         })
-
-        print(access_token)
 
         return access_token
 
     @staticmethod
     def authenticate_access_token(token: str):
-        authenticate_token(token=token, key=os.getenv("ACCESS_TOKEN_KEY"), algorithms=[os.getenv("ALGORITHM_TOKENS")])
+       decoded =  authenticate_token(token=token, key=os.getenv("ACCESS_TOKEN_KEY"), algorithms=[os.getenv("ALGORITHM_TOKENS")])
+
+       print(datetime.now())
+       print(datetime.now() + timedelta(seconds=1))
+       print(decoded)
+
+    @staticmethod
+    def logout_user(refresh_token: str):
+        decoded_token = authenticate_token(token=refresh_token, key=os.getenv("REFRESH_TOKEN_KEY"), algorithms=[os.getenv("ALGORITHM_TOKENS")])
+
+        data_revoke = {
+            "token": refresh_token,
+            **decoded_token
+        }
+
+        try:
+            db.tokens_revoke_collection.insert_one(data_revoke)
+        except Exception as error:
+            raise INTERNAL_SERVER_ERROR_MESSAGE
+
+
         

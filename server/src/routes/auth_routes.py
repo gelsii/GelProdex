@@ -14,3 +14,5 @@ auth_router.get("/token", status_code=201)(controllers.get_access_token)
 auth_router.post("/dashboard")(controllers.authenticate_access_token)
 
 auth_router.post("/page")(controllers.authenticate_auth_page)
+
+auth_router.delete("/logout")(controllers.logout_user)

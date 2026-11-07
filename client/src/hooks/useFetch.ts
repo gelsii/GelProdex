@@ -1,6 +1,9 @@
-import { tokenContext } from "@/contexts/token";
 import mainApiServices from "@/services/main.api.services";
-import axios from "axios";
+import axios, {
+  AxiosHeaders,
+  type AxiosHeaderParameters,
+  type AxiosRequestConfig,
+} from "axios";
 import React from "react";
 
 type states = {
@@ -38,13 +41,13 @@ type useFetchProps = {
   queries?: string | object;
   url: string;
   method: "GET" | "POST" | "PUT" | "DELETE";
-  startFetch?: boolean;
   onError?: (error: any) => any;
   onSuccess?: (data: any) => any;
   authData?: {
     username: string;
     password: string;
   };
+  authorization?: string;
 };
 
 export const useFetch = <D, E>({
@@ -54,6 +57,7 @@ export const useFetch = <D, E>({
   method,
   onSuccess,
   onError,
+  authorization,
 }: useFetchProps) => {
   const [state, dispatch] = React.useReducer(stateReducer, {
     isLoading: false,
@@ -63,8 +67,6 @@ export const useFetch = <D, E>({
 
   const [data, setData] = React.useState<D>();
   const [error, setError] = React.useState<E>();
-
-  const token = React.useContext(tokenContext);
 
   React.useEffect(() => {
     dispatch({ type: "setIsLoadingTrue" });
@@ -77,7 +79,7 @@ export const useFetch = <D, E>({
           data: dataAxios,
           params: queries,
           headers: {
-            Authorization: `Bearer ${token?.userToken}`,
+            Authorization: authorization,
           },
         });
 
@@ -88,22 +90,16 @@ export const useFetch = <D, E>({
         if (onSuccess) onSuccess(response.data);
       } catch (error: any) {
         dispatch({ type: "setIsErrorTrue" });
-        dispatch({ type: "setIsLoadingFalse" })
+        dispatch({ type: "setIsLoadingFalse" });
 
-        // if (axios.isAxiosError(error)) {
-
-        //   if(error.name) setError(error.code);
-        // }
-        // else setError("Something went wrong. Please try again.");
-
-        setError(error)
+        setError(error);
 
         if (onError) onError(error);
       }
     };
 
     fetchAPI();
-  }, [queries, url, dataAxios, method, onError, onSuccess, token]);
+  }, [queries, url, dataAxios, method, onError, onSuccess, authorization]);
 
   return { ...state, data, error };
 };
@@ -116,6 +112,7 @@ export const useOnFetch = <D, E>({
   onSuccess,
   onError,
   authData,
+  authorization,
 }: useFetchProps) => {
   const [state, dispatch] = React.useReducer(stateReducer, {
     isLoading: false,
@@ -124,9 +121,7 @@ export const useOnFetch = <D, E>({
   });
 
   const [data, setData] = React.useState<D>();
-  const [error, setError] = React.useState<E | string>();
-
-  const token = React.useContext(tokenContext);
+  const [error, setError] = React.useState<E>();
 
   const fetchAPI = React.useCallback(async () => {
     dispatch({ type: "setIsLoadingTrue" });
@@ -139,7 +134,7 @@ export const useOnFetch = <D, E>({
         params: queries,
         auth: authData,
         headers: {
-          Authorization: `Bearer ${token?.userToken}`,
+          Authorization: authorization,
         },
       });
 
@@ -152,12 +147,23 @@ export const useOnFetch = <D, E>({
       dispatch({ type: "setIsErrorTrue" });
       dispatch({ type: "setIsLoadingFalse" });
 
-      if (axios.isAxiosError(error)) setError(error.response?.data);
-      else setError("Something went wrong. Please try again.");
+      // if (axios.isAxiosError(error)) setError(error.response?.data);
+      // else setError("Something went wrong. Please try again.");
+
+      setError(error)
 
       if (onError) onError(error);
     }
-  }, [queries, url, dataAxios, method, onError, onSuccess, authData]);
+  }, [
+    queries,
+    url,
+    dataAxios,
+    method,
+    onError,
+    onSuccess,
+    authData,
+    authorization,
+  ]);
 
   return { ...state, data, error, fetchAPI };
 };

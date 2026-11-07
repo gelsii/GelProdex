@@ -13,6 +13,9 @@ bearer_security = HTTPBearer(auto_error=False)
 
 def get_user(token: HTTPAuthorizationCredentials = Depends(bearer_security)):
 
+    if token == None:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You don't have access to this page.")
+
     decoded_token = authenticate_token(key=os.getenv("ACCESS_TOKEN_KEY"), token=token.credentials, algorithms=os.getenv("ALGORITHM_TOKENS"))
 
     user_founded = users_collection.find({ "_id": ObjectId(decoded_token["_id"]) }, { "password": 0 })

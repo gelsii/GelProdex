@@ -9,26 +9,29 @@ import type {
 } from "@/types/messageResponseType";
 import type { AxiosError } from "axios";
 import React from "react";
-import { data, Outlet, useNavigate } from "react-router";
+import { Outlet, useNavigate } from "react-router";
 
 type DashboardAuthenticateProps = {
   children: React.ReactNode;
 };
 
-const DashboardAuthenticate = ({ children }: DashboardAuthenticateProps) => {
-  const { isSuccess, isError } = useFetch({
-    url: "/auth/dashboard",
-    method: "POST",
-  });
+// const DashboardAuthenticate = ({ children }: DashboardAuthenticateProps) => {
+//   const token = React.useContext(tokenContext);
 
-  return (
-    <>
-      {isSuccess && children}
+//   const { isSuccess, isError } = useFetch({
+//     url: "/auth/dashboard",
+//     method: "POST",
+//     authorization: `Bearer ${token?.userToken}`,
+//   });
 
-      {isError && <h1>Errr</h1>}
-    </>
-  );
-};
+//   return (
+//     <>
+//       {isSuccess && children}
+
+//       {isError && <h1>Errr</h1>}
+//     </>
+//   );
+// };
 
 const DashboardLayout = () => {
   const navigate = useNavigate();
@@ -51,14 +54,12 @@ const DashboardLayout = () => {
   return (
     <>
       {isSuccess && (
-        <DashboardAuthenticate>
-          <main className="w-full h-full md:border-r md:border-l">
-            <Header />
-            <div className="w-full h-full px-[clamp(1.2rem,6vw,12rem)]">
-              <Outlet />
-            </div>
-          </main>
-        </DashboardAuthenticate>
+        <main className="w-full h-full scrollbar-none md:border-r md:border-l">
+          <Header />
+          <div className="w-full h-full px-[clamp(1.2rem,6vw,12rem)]">
+            <Outlet />
+          </div>
+        </main>
       )}
 
       {isLoading && <h1>Loading... Please wait.</h1>}

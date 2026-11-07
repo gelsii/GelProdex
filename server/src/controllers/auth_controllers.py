@@ -1,5 +1,6 @@
 import os
 
+from dependencies.get_current_user import get_user
 from fastapi import Depends, Response
 from models.auth_models import SignUpModels
 from services.auth_services import AuthServices
@@ -41,7 +42,7 @@ class AuthControllers:
 
     @staticmethod
     def authenticate_access_token(access_token: HTTPAuthorizationCredentials = Depends(bearer_security)):
-        print(access_token.credentials)
+
         services.authenticate_access_token(token=access_token.credentials)
 
         return { "message": "Welcome to dashboard!" }
@@ -55,3 +56,12 @@ class AuthControllers:
             return { "isLogged": False }
         
         return { "isLogged": True }
+
+    @staticmethod
+    def logout_user(res: Response, token: str = Depends(cookie_security)):
+
+        services.logout_user(access_token=token)
+
+        res.delete_cookie(key="access", httponly=True, secure=True)
+
+        return { "message": "Successfully Logouted!" }
