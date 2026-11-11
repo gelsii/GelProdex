@@ -1,4 +1,4 @@
-import { LayoutDashboard, Settings } from "lucide-react";
+import { LayoutDashboard, Menu, Settings } from "lucide-react";
 import React from "react";
 import { Button } from "../ui/button";
 import { NavLink } from "react-router";
@@ -13,6 +13,43 @@ import {
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Separator } from "../ui/separator";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+
+const navs = [
+  {
+    name: "Products",
+    url: "/dashboard",
+  },
+  {
+    name: "Add Products",
+    url: "createProduct",
+  },
+];
+
+const Navigations = () => {
+  return (
+    <nav>
+      <ul className="flex flex-col gap-8 items-center h-full sm:flex-row">
+        {navs.map((nav, index) => (
+          <NavLink key={index} to={nav.url} className={"w-full"}>
+            <Button className="cursor-default font-heading transition-all button-bg-lightBlue px-6 w-full duration-300 rounded-lg hover:text-lightBlue ">
+              {nav.name}
+            </Button>
+          </NavLink>
+        ))}
+      </ul>
+    </nav>
+  );
+};
 
 const SettingsDialog = () => {
   return (
@@ -61,37 +98,44 @@ const SettingsDialog = () => {
   );
 };
 
-const navs = [
-  {
-    name: "Products",
-    url: "/dashboard",
-  },
-  {
-    name: "Add Products",
-    url: "createProduct",
-  },
-];
+const MobileHeader = () => {
+  return (
+    <div>
+      <Sheet>
+        <SheetTrigger>
+          <Menu />
+        </SheetTrigger>
+        <SheetContent>
+          <SheetHeader>
+            <SheetTitle>Navigations</SheetTitle>
+          </SheetHeader>
+
+          <Navigations />
+        </SheetContent>
+      </Sheet>
+    </div>
+  );
+};
 
 const Header = () => {
   return (
     <header className="w-full h-18 sticky z-31 backdrop-blur-md top-0 left-0 flex justify-start items-center shadow-2xl">
-      <div className="w-full h-full flex justify-between items-center px-[clamp(1.2rem,6vw,12rem)]">
-        <h1 className="flex gap-2 items-center font-bold text-lg text-lightBlue">
-          <LayoutDashboard />
-          Dashboard
-        </h1>
+      <div className="w-full h-full justify-between items-center flex px-[clamp(1.2rem,6vw,12rem)] ">
+        <div className="flex gap-2 items-center h-full">
+          <div className="sm:hidden">
+            <MobileHeader />
+          </div>
+          <h1 className="flex gap-2 items-center font-bold text-lg text-lightBlue">
+            <LayoutDashboard />
+            Dashboard
+          </h1>
+        </div>
 
-        <nav>
-          <ul className="flex gap-8 items-center h-full ">
-            {navs.map((nav, index) => (
-              <NavLink key={index} to={nav.url}>
-                <li className="cursor-default font-heading transition-all duration-300 hover:text-lightBlue">
-                  {nav.name}
-                </li>
-              </NavLink>
-            ))}
-          </ul>
-        </nav>
+        <div className="hidden sm:flex">
+          <Navigations />
+        </div>
+
+        <div className="hidden sm:flex"></div>
 
         <SettingsDialog />
       </div>

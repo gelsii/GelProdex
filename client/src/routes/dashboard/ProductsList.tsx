@@ -20,7 +20,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import ErrorFetching from "@/components/dashboard/ErrorFetching";
 import { useFetch } from "@/hooks/useFetch";
 import { tokenContext } from "@/contexts/token";
 import {
@@ -87,7 +86,7 @@ const ProductsList = () => {
             <SearchProductsList />
           </div>
 
-          <div className="hidden lg:flex ">
+          {/* <div className="hidden lg:flex ">
             <Table>
               <TableCaption>A list of your products.</TableCaption>
               <TableHeader>
@@ -109,9 +108,9 @@ const ProductsList = () => {
                 ))}
               </TableBody>
             </Table>
-          </div>
+          </div> */}
 
-          <div className="place-items-center auto-cols-auto sm:columns-2 lg:hidden">
+          <div className="place-items-center auto-cols-auto sm:columns-2 lg:columns-3 xl:columns-4 ">
             {data?.products.map((product, index) => (
               <CardProductList key={index} {...product} />
             ))}

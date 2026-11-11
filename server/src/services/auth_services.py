@@ -80,7 +80,7 @@ class AuthServices:
 
         access_token = generate_token(key=os.getenv("ACCESS_TOKEN_KEY"), algorithm=os.getenv("ALGORITHM_TOKENS"), payload={
             "_id": decoded_token["_id"],
-            "exp": datetime.utcnow() + timedelta(seconds=1)
+            "exp": datetime.utcnow() + timedelta(minutes=int(os.getenv("ACCESS_TOKEN_EXPIRE_M")))
         })
 
         return access_token
