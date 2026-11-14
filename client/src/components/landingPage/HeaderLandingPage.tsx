@@ -11,6 +11,11 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Handbag, Home, Menu } from "lucide-react";
+import { useFetch } from "@/hooks/useFetch";
+import {
+  type authResponseMessage,
+  type errorMessageResponse,
+} from "@/types/messageResponseType";
 
 const ButtonsHeader = React.memo(
   ({
@@ -22,20 +27,36 @@ const ButtonsHeader = React.memo(
   }) => {
     const navigate = useNavigate();
 
+    const { data } = useFetch<authResponseMessage, errorMessageResponse>({
+      url: "/auth/page",
+      method: "POST",
+    });
+
     return (
       <div className={`flex gap-2 items-center ${className}`}>
-        <Button
-          className={`button-border-lightBlue ${styleButton}`}
-          onClick={() => navigate("/auth/signin", { replace: true })}
-        >
-          Sign In
-        </Button>
-        <Button
-          className={`button-bg-lightBlue ${styleButton}`}
-          onClick={() => navigate("/auth/signup", { replace: true })}
-        >
-          Get Started
-        </Button>
+        {data?.isLogged ? (
+          <Button
+            className={"button-bg-lightBlue"}
+            onClick={() => navigate("/dashboard")}
+          >
+            Go Dashboard
+          </Button>
+        ) : (
+          <>
+            <Button
+              className={`button-border-lightBlue ${styleButton}`}
+              onClick={() => navigate("/auth/signin", { replace: true })}
+            >
+              Sign In
+            </Button>
+            <Button
+              className={`button-bg-lightBlue ${styleButton}`}
+              onClick={() => navigate("/auth/signup", { replace: true })}
+            >
+              Get Started
+            </Button>
+          </>
+        )}
       </div>
     );
   },
@@ -135,7 +156,7 @@ const HeaderLandingPage = () => {
           <NavsHeader postionIcon="left" styleLi="hover:text-lightBlue" />
         </div>
 
-        <div className="hidden items-center md:flex">
+        <div className="hidden md:flex">
           <ButtonsHeader />
         </div>
 

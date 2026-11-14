@@ -11,12 +11,18 @@ from utils.token import authenticate_token, generate_token
 
 load_dotenv()
 
+include_AT = "@"
+include_DOT = ".com"
+
 class AuthServices:
 
     @staticmethod
     def sign_up(fields_req: SignUpModels):
 
         EXCEPTION_400_BAD_REQ = HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The username or email already registered")
+
+        if not include_AT in fields_req.email or include_DOT in fields_req.email:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Wrong email... Please make sure the email is correct")
 
         user_founded = db.users_collection.find_one({ "$and": [
             { "email": fields_req.email },
@@ -106,6 +112,3 @@ class AuthServices:
             db.tokens_revoke_collection.insert_one(data_revoke)
         except Exception as error:
             raise INTERNAL_SERVER_ERROR_MESSAGE
-
-
-        

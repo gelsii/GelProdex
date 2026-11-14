@@ -1,7 +1,7 @@
 import { LayoutDashboard, Menu, Settings } from "lucide-react";
 import React from "react";
 import { Button } from "../ui/button";
-import { NavLink } from "react-router";
+import { NavLink, useNavigate } from "react-router";
 import {
   Dialog,
   DialogContent,
@@ -23,6 +23,71 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { Trash2Icon } from "lucide-react";
+
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogMedia,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { useOnFetch } from "@/hooks/useFetch";
+import type {
+  messageResponse,
+  errorMessageResponse,
+} from "@/types/messageResponseType";
+import { toast } from "sonner";
+import type { AxiosError } from "axios";
+import { tokenContext } from "@/contexts/token";
+
+const LogoutDialog = () => {
+  const navigate = useNavigate();
+  const token = React.useContext(tokenContext);
+
+  const { fetchAPI } = useOnFetch({
+    url: "/auth/logout",
+    method: "DELETE",
+    authorization: `Bearer ${token?.userToken}`,
+    onSuccess: (data: messageResponse) => {
+      toast.success(data.message);
+      navigate("/", { replace: true });
+    },
+    onError: (error: AxiosError<errorMessageResponse>) =>
+      toast.error(error.response?.data.detail),
+  });
+
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger
+        render={<Button variant="destructive">Logout</Button>}
+      />
+      <AlertDialogContent size="sm">
+        <AlertDialogHeader>
+          <AlertDialogMedia className="bg-destructive/10 text-destructive dark:bg-destructive/20 dark:text-destructive">
+            <Trash2Icon />
+          </AlertDialogMedia>
+          <AlertDialogTitle>Are you sure you want to log out?</AlertDialogTitle>
+          <AlertDialogDescription>
+            You are about to end your current session. You will need to log in
+            again to access your account.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel variant="outline">Cancel</AlertDialogCancel>
+          <AlertDialogAction variant="destructive" onClick={() => fetchAPI()}>
+            Logout
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+};
 
 const navs = [
   {
@@ -91,7 +156,7 @@ const SettingsDialog = () => {
 
           <Separator />
 
-          <Button variant={"destructive"}>Logout</Button>
+          <LogoutDialog />
         </DialogHeader>
       </DialogContent>
     </Dialog>

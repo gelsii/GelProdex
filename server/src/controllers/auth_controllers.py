@@ -2,6 +2,7 @@ import os
 
 from dependencies.get_current_user import get_user
 from fastapi import Depends, Response
+from fastapi.background import P
 from models.auth_models import SignUpModels
 from services.auth_services import AuthServices
 from fastapi.security import HTTPBasic, HTTPBasicCredentials, APIKeyCookie, HTTPBearer, HTTPAuthorizationCredentials
@@ -48,19 +49,19 @@ class AuthControllers:
         return { "message": "Welcome to dashboard!" }
 
     @staticmethod
-    def authenticate_auth_page(token: str = Depends(cookie_security)):
+    def authenticate_auth_page(refresh_token: str = Depends(cookie_security)):
 
         try:
-            authenticate_token(token=token, key=os.getenv("REFRESH_TOKEN_KEY"), algorithms=[os.getenv("ALGORITHM_TOKENS")])
+            authenticate_token(token=refresh_token, key=os.getenv("REFRESH_TOKEN_KEY"), algorithms=[os.getenv("ALGORITHM_TOKENS")])
         except Exception: 
-            return { "isLogged": False }
+            return { "isLogged": False } 
         
         return { "isLogged": True }
 
     @staticmethod
     def logout_user(res: Response, token: str = Depends(cookie_security)):
-
-        services.logout_user(access_token=token)
+        
+        services.logout_user(refresh_token=token)
 
         res.delete_cookie(key="access", httponly=True, secure=True)
 

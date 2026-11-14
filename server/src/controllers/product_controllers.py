@@ -22,4 +22,25 @@ class ProductControllers:
 
         return { "message": "Successfully created!" }
 
+    @staticmethod
+    def get_all_products():
+
+        products = services.get_all_products()
+
+        return { "products": products }
+
+    @staticmethod
+    def update_product_user(fields: CreateProductModels, id: str, user: dict = Depends(get_user)):
+
+        services.update_product_user(fields_updated=fields, user=user, product_id=id)
+
+        return { "message": "Successfully Updated!" }
+
+    @staticmethod
+    def delete_product_user(id: str, user: dict = Depends(get_user)):
+
+        services.delete_product_user(product_id=id, user=user)
+
+        return { "message": "Successfully Deleted!" }
+
     
