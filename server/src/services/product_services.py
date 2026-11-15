@@ -80,4 +80,26 @@ class ProductServices:
         except Exception as error:
             raise INTERNAL_SERVER_ERROR_MESSAGE
         
-        
+    @staticmethod 
+    def search_product_user(search_query: str, user: dict, product_id: str):
+        try:
+            founded_searches_products = products_collection.find({ "$and": [
+                { "user_id": ObjectId(user["_id"]) },
+                { "name": { "$regex": search_query }}
+            ]})
+        except Exception as error:
+            raise INTERNAL_SERVER_ERROR_MESSAGE
+
+        if len(list(founded_searches_products)) == 0:
+            return "No found products"
+
+        print(list(founded_searches_products))
+
+        updated_products = [ ]
+
+        for product in list(founded_searches_products):
+            product["_id"] = str(product["_id"])
+            product["user_id"] = str(product["user_id"])
+            updated_products.append(product)
+
+        return updated_products

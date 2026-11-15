@@ -8,30 +8,30 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "./button";
+import type { dataProductsTypes } from "@/types/productsResponseType";
 
-const CardProducts = React.memo(() => {
+const CardProducts = React.memo((props: dataProductsTypes) => {
   return (
     <Card className=" w-full max-w-sm pt-0">
       <img
-        src="https://avatar.vercel.sh/shadcn1"
+        src={props.url_image}
         alt="Event cover"
-        className=" z-20 aspect-video w-full object-cover brightness-60 grayscale dark:brightness-40"
+        className="w-full h-full rounded-lg"
       />
       <CardHeader>
         <CardAction>
-          {/* <Badge variant="secondary">Featured</Badge> */}
-          @Gelsi
+          {/* <Badge variant="secondary">Featured</Badge> */}@{props.username}
         </CardAction>
-        <CardTitle>Product Name</CardTitle>
-        <CardDescription>
-          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Minus
-          dignissimos fuga consequuntur voluptate eum, ex possimus recusandae
-          nostrum iure enim magni voluptates corrupti nihil modi neque facilis
-          exercitationem, officiis inventore.
-        </CardDescription>
+        <CardTitle>{props.name}</CardTitle>
+        <CardDescription>{props.description}</CardDescription>
       </CardHeader>
       <CardFooter>
-        <Button className="w-full button-bg-lightBlue">Message</Button>
+        <Button
+          className="w-full button-bg-lightBlue"
+          onClick={() => location.assign(props.url_message)}
+        >
+          Message
+        </Button>
       </CardFooter>
     </Card>
   );

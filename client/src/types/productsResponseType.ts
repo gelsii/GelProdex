@@ -1,8 +1,10 @@
 export type dataProductsTypes = {
-    _id: string,
-    name: string,
-    description: string,
-    url_image: string
-}
+  _id: string;
+  username: string;
+  name: string;
+  description: string;
+  url_image: string;
+  url_message: string;
+};
 
-export type responseProducts  = { products: Array<dataProductsTypes> }
+export type responseProducts = { products: Array<dataProductsTypes> };

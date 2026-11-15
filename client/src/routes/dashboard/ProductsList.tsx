@@ -1,13 +1,4 @@
 import React from "react";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -57,10 +48,11 @@ const CardProductList = React.memo((props: productData) => {
 
         <CardDescription>{props.description}</CardDescription>
       </CardContent>
-      <CardFooter>
+      <CardFooter className="grid gap-2">
         <Button variant={"destructive"} className={"w-full"}>
           Delete
         </Button>
+        <Button variant={"secondary"}>Edit</Button>
       </CardFooter>
     </Card>
   );

@@ -123,7 +123,6 @@ const SettingsDialog = () => {
         render={
           <Button className={" gap-2 button-bg-lightBlue sm:flex"}>
             <Settings />
-            Settings
           </Button>
         }
       ></DialogTrigger>
@@ -199,8 +198,6 @@ const Header = () => {
         <div className="hidden sm:flex">
           <Navigations />
         </div>
-
-        <div className="hidden sm:flex"></div>
 
         <SettingsDialog />
       </div>
