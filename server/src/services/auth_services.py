@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 import os
 
 import bcrypt
+from bson.objectid import ObjectId
 from dotenv import load_dotenv
 from fastapi import HTTPException, Response, status, Depends
 from models.auth_models import SignInModels, SignUpModels
@@ -21,7 +22,7 @@ class AuthServices:
 
         EXCEPTION_400_BAD_REQ = HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The username or email already registered")
 
-        if not include_AT in fields_req.email or include_DOT in fields_req.email:
+        if not include_AT in fields_req.email and include_DOT in fields_req.email:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Wrong email... Please make sure the email is correct")
 
         user_founded = db.users_collection.find_one({ "$and": [
@@ -103,12 +104,16 @@ class AuthServices:
     def logout_user(refresh_token: str):
         decoded_token = authenticate_token(token=refresh_token, key=os.getenv("REFRESH_TOKEN_KEY"), algorithms=[os.getenv("ALGORITHM_TOKENS")])
 
+        print(decoded_token)
+
         data_revoke = {
             "token": refresh_token,
-            **decoded_token
+            **decoded_token,
+            "_id": ObjectId()
         }
 
         try:
             db.tokens_revoke_collection.insert_one(data_revoke)
         except Exception as error:
+            print(error)
             raise INTERNAL_SERVER_ERROR_MESSAGE

@@ -2,10 +2,7 @@ import { Button } from "@/components/ui/button";
 import CardProducts from "@/components/ui/CardProducts";
 import { Input } from "@/components/ui/input";
 import { useFetch } from "@/hooks/useFetch";
-import type {
-  productsResponseData,
-  errorMessageResponse,
-} from "@/types/messageResponseType";
+import type { errorMessageResponse } from "@/types/messageResponseType";
 import type { responseProducts } from "@/types/productsResponseType";
 import type { AxiosError } from "axios";
 import React from "react";
