@@ -44,9 +44,9 @@ class ProductControllers:
         return { "message": "Successfully Deleted!" }
 
     @staticmethod
-    def search_product_user(search: str, id: str, user: dict = Depends(get_user)):
+    def search_product_user(search: str, user: dict = Depends(get_user)):
 
-        result_products = services.search_product_user(search_query=search, user=user, product_id=id)
+        result_products = services.search_product_user(search_query=search, user=user)
 
         return { "products": result_products }
 

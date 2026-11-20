@@ -1,8 +1,8 @@
-import React from "react";
+import React, { type SubmitEvent } from "react";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
+import { LogOutIcon, Search, SquareX } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -11,7 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useFetch } from "@/hooks/useFetch";
+import { useFetch, useOnFetch } from "@/hooks/useFetch";
 import { tokenContext } from "@/contexts/token";
 import {
   type productsResponseData,
@@ -20,16 +20,81 @@ import {
 } from "@/types/messageResponseType";
 import type { AxiosError } from "axios";
 import ErrorAuthorized from "@/components/dashboard/ErrorAuthorized";
+import { toast } from "sonner";
 
 const SearchProductsList = React.memo(() => {
-  return (
-    <form className="flex gap-2">
-      <Input type="text" placeholder="Search Products..." />
-      <Button type="submit">
-        <Search />
-      </Button>
-    </form>
+  const [searchValue, setSearchValue] = React.useState("");
+  const [isOpen, setIsOpen] = React.useState(false);
+
+  const token = React.useContext(tokenContext);
+
+  const { data, isLoading, fetchAPI } = useOnFetch<
+    productsResponseData,
+    AxiosError<errorMessageResponse>
+  >({
+    url: "/products_search/user",
+    method: "GET",
+    queries: {
+      search: searchValue,
+    },
+    authorization: `Bearer ${token?.userToken}`,
+    onError: (err: AxiosError<errorMessageResponse>) =>
+      toast.error(err.response?.data.detail),
+  });
+
+  const submitSearchProduct = React.useCallback(
+    (e: SubmitEvent) => {
+      e.preventDefault();
+      setIsOpen(true);
+      fetchAPI();
+    },
+    [fetchAPI],
   );
+  return (
+    <>
+      <form className="flex gap-2" onSubmit={submitSearchProduct}>
+        <Input
+          type="text"
+          placeholder="Search Products..."
+          onChange={(e) => setSearchValue(e.target.value)}
+          required
+        />
+        <Button type="submit">
+          <Search />
+        </Button>
+      </form>
+      {isOpen && (
+        <section className="w-full h-full p-10 z-100 fixed top-0 left-0 backdrop-blur-sm bg-[#05050547] ">
+          <div className="flex justify-between">
+            <h1 className="font-bold text-blue-600 text-xl">
+              Searched Product
+            </h1>
+            <SquareX
+              className="text-lightBlue w-8 h-8 cursor-pointer"
+              onClick={() => setIsOpen(false)}
+            />
+          </div>
+
+          {isLoading && <h1>Searching....</h1>}
+          <div className="place-items-center my-4 auto-cols-auto sm:columns-2 lg:columns-3 xl:columns-4 ">
+            {data?.products.map((product, index) => (
+              <CardProductList key={index} {...product} />
+            ))}
+
+            {data?.products.length == 0 && <h1>No found products</h1>}
+          </div>
+        </section>
+      )}
+    </>
+  );
+});
+
+const DeleteDialog = React.memo(() => {
+  return;
+});
+
+const EditDialog = React.memo(() => {
+  return;
 });
 
 const CardProductList = React.memo((props: productData) => {
@@ -61,7 +126,7 @@ const CardProductList = React.memo((props: productData) => {
 const ProductsList = () => {
   const token = React.useContext(tokenContext);
 
-  const { data, isLoading, isSuccess, isError, error } = useFetch<
+  const { data, isLoading, isSuccess, isError } = useFetch<
     productsResponseData,
     AxiosError<errorMessageResponse>
   >({
@@ -77,30 +142,6 @@ const ProductsList = () => {
             <Label>Products:</Label>
             <SearchProductsList />
           </div>
-
-          {/* <div className="hidden lg:flex ">
-            <Table>
-              <TableCaption>A list of your products.</TableCaption>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-25">Name</TableHead>
-                  <TableHead>Amount</TableHead>
-                  <TableHead>Description</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {data?.products.map((product, index) => (
-                  <TableRow key={index}>
-                    <TableCell className="font-medium">
-                      {product.name}
-                    </TableCell>
-                    <TableCell>$ {product.price}</TableCell>
-                    <TableCell>{product.description}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div> */}
 
           <div className="place-items-center auto-cols-auto sm:columns-2 lg:columns-3 xl:columns-4 ">
             {data?.products.map((product, index) => (

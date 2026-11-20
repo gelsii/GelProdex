@@ -1,5 +1,4 @@
 from datetime import datetime
-
 from fastapi import HTTPException, status
 from database.use import users_collection, products_collection
 from bson.objectid import ObjectId
@@ -60,6 +59,8 @@ class ProductServices:
             "url_message": fields_updated.url_message
         }
 
+        
+
         try:
             products_collection.update_one({ "$and": [
                 { "_id": ObjectId(product_id) },
@@ -81,7 +82,7 @@ class ProductServices:
             raise INTERNAL_SERVER_ERROR_MESSAGE
         
     @staticmethod 
-    def search_product_user(search_query: str, user: dict, product_id: str):
+    def search_product_user(search_query: str, user: dict):
         try:
             founded_searches_products = products_collection.find({ "$and": [
                 { "user_id": ObjectId(user["_id"]) },
@@ -89,11 +90,6 @@ class ProductServices:
             ]})
         except Exception as error:
             raise INTERNAL_SERVER_ERROR_MESSAGE
-
-        if len(list(founded_searches_products)) == 0:
-            return "No found products"
-
-        print(list(founded_searches_products))
 
         updated_products = [ ]
 
