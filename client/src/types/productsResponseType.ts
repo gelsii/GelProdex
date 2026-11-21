@@ -1,10 +1,13 @@
+type undeStr = undefined | string;
+
 export type dataProductsTypes = {
-  _id: string;
-  username: string;
-  name: string;
-  description: string;
-  url_image: string;
-  url_message: string;
+  _id: undeStr;
+  username: undeStr;
+  name: undeStr;
+  price: number | undefined,
+  description: undeStr;
+  url_image: undeStr;
+  url_message: undeStr;
 };
 
 export type responseProducts = { products: Array<dataProductsTypes> };

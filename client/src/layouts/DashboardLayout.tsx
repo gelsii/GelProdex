@@ -6,32 +6,58 @@ import { useFetch } from "@/hooks/useFetch";
 import type {
   errorMessageResponse,
   tokenResponse,
+  userResponseData,
 } from "@/types/messageResponseType";
 import type { AxiosError } from "axios";
 import React from "react";
 import { Outlet, useNavigate } from "react-router";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import DashboardSideBar from "@/components/dashboard/SideBar";
+import { currentUserContext, type User } from "@/contexts/currentUser";
 
 type DashboardAuthenticateProps = {
   children: React.ReactNode;
 };
 
-// const DashboardAuthenticate = ({ children }: DashboardAuthenticateProps) => {
-//   const token = React.useContext(tokenContext);
+const DashboardTakeUser = ({ children }: DashboardAuthenticateProps) => {
+  const token = React.useContext(tokenContext);
+  const user = React.useContext(currentUserContext);
+  const navigate = useNavigate();
 
-//   const { isSuccess, isError } = useFetch({
-//     url: "/auth/dashboard",
-//     method: "POST",
-//     authorization: `Bearer ${token?.userToken}`,
-//   });
+  const { isSuccess, isError, error } = useFetch<
+    User,
+    AxiosError<errorMessageResponse>
+  >({
+    url: "/auth/user",
+    method: "GET",
+    authorization: `Bearer ${token?.userToken}`,
+    onSuccess: React.useCallback((res: userResponseData) => {
+      user?.setUserData(res.data);
+    }, []),
+  });
 
-//   return (
-//     <>
-//       {isSuccess && children}
+  return (
+    <>
+      {isSuccess && children}
 
-//       {isError && <h1>Errr</h1>}
-//     </>
-//   );
-// };
+      {isError && (
+        <ErrorFetching
+          description={error?.response?.data.detail}
+          title={`${error?.response?.status} - ${error?.response?.statusText}`}
+          buttons={
+            <Button
+              className={"w-38"}
+              variant={"secondary"}
+              onClick={() => navigate("/auth/signin", { replace: true })}
+            >
+              Login
+            </Button>
+          }
+        />
+      )}
+    </>
+  );
+};
 
 const DashboardLayout = () => {
   const navigate = useNavigate();
@@ -54,12 +80,20 @@ const DashboardLayout = () => {
   return (
     <>
       {isSuccess && (
-        <main className="w-full h-full scrollbar-none md:border-r md:border-l">
-          <Header />
-          <div className="w-full h-full px-[clamp(1.2rem,6vw,12rem)]">
-            <Outlet />
-          </div>
-        </main>
+        <DashboardTakeUser>
+          <SidebarProvider>
+            <DashboardSideBar />
+
+            <SidebarInset>
+              <main className="w-full h-full scrollbar-none md:border-r md:border-l">
+                <Header />
+                <div className="px-10">
+                  <Outlet />
+                </div>
+              </main>
+            </SidebarInset>
+          </SidebarProvider>
+        </DashboardTakeUser>
       )}
 
       {isLoading && <h1>Loading... Please wait.</h1>}

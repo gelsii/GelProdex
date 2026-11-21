@@ -99,3 +99,13 @@ class ProductServices:
             updated_products.append(product)
 
         return updated_products
+
+    @staticmethod
+    def search_product(search_query: str):
+        try:
+            founded_products = products_collection.find({ "name": { "$regex": search_query }}, { "_id": 0, "user_id": 0 })
+        except Exception as error:
+            raise INTERNAL_SERVER_ERROR_MESSAGE
+
+        return list(founded_products)
+

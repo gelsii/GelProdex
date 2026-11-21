@@ -66,3 +66,7 @@ class AuthControllers:
         res.delete_cookie(key="access", httponly=True, secure=True)
 
         return { "message": "Successfully Logouted!" }
+
+    @staticmethod
+    def get_current_user(user: dict = Depends(get_user)):
+        return { "data": user }

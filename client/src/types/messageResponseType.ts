@@ -1,3 +1,5 @@
+import type { User } from "@/contexts/currentUser";
+
 export type messageResponse = { message: string };
 
 export type errorMessageResponse = { detail: string };
@@ -19,3 +21,5 @@ export type productData = {
 export type productsResponseData = {
   products: productData[];
 };
+
+export type userResponseData = { data: User }

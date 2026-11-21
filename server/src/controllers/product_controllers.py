@@ -50,4 +50,11 @@ class ProductControllers:
 
         return { "products": result_products }
 
+    @staticmethod
+    def search_product(search_name: str):
+        
+        result = services.search_product(search_query=search_name)
+
+        return { "products": result }
+
     

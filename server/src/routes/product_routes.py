@@ -15,3 +15,5 @@ product_router.put("/products")(controllers.update_product_user)
 product_router.delete("/products")(controllers.delete_product_user)
 
 product_router.get("/products_search/user")(controllers.search_product_user)
+
+product_router.get("/products_search")(controllers.search_product)

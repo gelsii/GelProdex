@@ -1,3 +1,4 @@
+import refetchDataContext from "@/contexts/refetchData";
 import mainApiServices from "@/services/main.api.services";
 import axios, {
   AxiosHeaders,
@@ -68,6 +69,8 @@ export const useFetch = <D, E>({
   const [data, setData] = React.useState<D>();
   const [error, setError] = React.useState<E>();
 
+  const refetch = React.useContext(refetchDataContext);
+
   React.useEffect(() => {
     dispatch({ type: "setIsLoadingTrue" });
 
@@ -96,9 +99,14 @@ export const useFetch = <D, E>({
 
         if (onError) onError(error);
       }
+      refetch?.setRefetchData(false);
     };
 
     fetchAPI();
+
+    if (refetch?.refetchData) {
+      fetchAPI();
+    }
   }, [queries, url, dataAxios, method, onError, onSuccess, authorization]);
 
   return { ...state, data, error };
@@ -150,7 +158,7 @@ export const useOnFetch = <D, E>({
       // if (axios.isAxiosError(error)) setError(error.response?.data);
       // else setError("Something went wrong. Please try again.");
 
-      setError(error)
+      setError(error);
 
       if (onError) onError(error);
     }

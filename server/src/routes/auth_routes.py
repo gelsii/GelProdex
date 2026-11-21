@@ -16,3 +16,5 @@ auth_router.post("/dashboard")(controllers.authenticate_access_token)
 auth_router.post("/page")(controllers.authenticate_auth_page)
 
 auth_router.delete("/logout")(controllers.logout_user)
+
+auth_router.get("/user")(controllers.get_current_user)
