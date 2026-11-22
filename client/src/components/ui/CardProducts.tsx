@@ -2,6 +2,7 @@ import React from "react";
 import {
   Card,
   CardAction,
+  CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
@@ -12,19 +13,22 @@ import type { dataProductsTypes } from "@/types/productsResponseType";
 
 const CardProducts = React.memo((props: dataProductsTypes) => {
   return (
-    <Card className=" w-full max-w-sm pt-0">
-      <img
-        src={props.url_image}
-        alt="Event cover"
-        className="w-full h-full rounded-lg"
-      />
+    <Card className=" w-full max-w-sm">
       <CardHeader>
-        <CardAction>
-          {/* <Badge variant="secondary">Featured</Badge> */}@{props.username}
-        </CardAction>
-        <CardTitle>{props.name}</CardTitle>
-        <CardDescription>{props.description}</CardDescription>
+        <img
+          src={props.url_image}
+          alt="Event cover"
+          className="w-full h-full rounded-lg "
+        />
       </CardHeader>
+      <CardContent>
+        <div className="flex justify-between mb-2">
+          <CardTitle>{props.name}</CardTitle>{" "}
+          <CardTitle>@{props.username}</CardTitle>
+        </div>
+        <CardDescription>{props.description}</CardDescription>
+      </CardContent>
+
       <CardFooter>
         <Button
           className="w-full button-bg-lightBlue"

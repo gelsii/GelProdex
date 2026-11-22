@@ -1,9 +1,23 @@
 import { Button } from "@/components/ui/button";
 import CardProducts from "@/components/ui/CardProducts";
+import { Separator } from "@/components/ui/separator";
+import { useFetch } from "@/hooks/useFetch";
+import type { errorMessageResponse } from "@/types/messageResponseType";
+import type { responseProducts } from "@/types/productsResponseType";
+import type { AxiosError } from "axios";
 import { useNavigate } from "react-router";
 
 const Home = () => {
   const navigate = useNavigate();
+
+  const { data, isError, isLoading, isSuccess } = useFetch<
+    responseProducts,
+    AxiosError<errorMessageResponse>
+  >({
+    url: "/products?limit=3&skip=0",
+    method: "GET",
+  });
+
   return (
     <section className="w-full h-fit  flex flex-col justify-center items-center px-4 gap-14">
       <div className="text-left h-full mt-8 flex-col-start-items sm:text-center md:mt-24">
@@ -15,17 +29,20 @@ const Home = () => {
           pwede kang mag post ng iyong produkto sa pamamagitan ng GET STARTED,
           ito ang GelProdex na market shop
         </p>
-        <Button className={"button-bg-lightBlue w-40 mt-4"}>Get Started</Button>
       </div>
+
+      <Separator />
 
       <div className="w-full h-full flex-col flex gap-8 justify-center items-center py-8">
         <h1 className="text-center">New Products</h1>
 
-        <div className="w-full mt-4 grid-auto-cols">
-          {Array.from({ length: 3 }).map((_, index) => (
-            <CardProducts key={index} />
-          ))}
-        </div>
+        {isSuccess && (
+          <div className="w-full mt-4 grid-auto-cols">
+            {data?.products.map((item, index) => (
+              <CardProducts key={index} {...item} />
+            ))}
+          </div>
+        )}
 
         <Button
           onClick={() => navigate("/products")}

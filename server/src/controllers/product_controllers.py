@@ -23,9 +23,9 @@ class ProductControllers:
         return { "message": "Successfully created!" }
 
     @staticmethod
-    def get_all_products():
+    def get_all_products(limit: int):
 
-        products = services.get_all_products()
+        products = services.get_all_products(limit=limit)
 
         return { "products": products }
 

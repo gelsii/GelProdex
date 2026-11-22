@@ -8,9 +8,9 @@ from utils.internal_server_message import INTERNAL_SERVER_ERROR_MESSAGE
 class ProductServices:
 
     @staticmethod
-    def get_all_products():
+    def get_all_products(limit: int):
         try:
-            founded_all_products = products_collection.find({ }, { "_id": 0, "user_id": 0 })
+            founded_all_products = products_collection.find({ }, { "_id": 0, "user_id": 0 }).sort({ "createdAt": -1 }).limit(limit)
         except Exception as error:
             raise INTERNAL_SERVER_ERROR_MESSAGE
 

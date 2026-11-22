@@ -7,7 +7,7 @@ import type { responseProducts } from "@/types/productsResponseType";
 import type { AxiosError } from "axios";
 import React from "react";
 
-const SearchProducts = React.memo(() => {
+const SearchProducts = () => {
   return (
     <div className="mb-6 w-full sticky top-22 z-30">
       <form className="flex gap-2">
@@ -21,25 +21,36 @@ const SearchProducts = React.memo(() => {
       </form>
     </div>
   );
-});
+};
 
 const Products = () => {
+  const [limitData, setLimitData] = React.useState(5);
+
   const { data, isSuccess, isLoading } = useFetch<
     responseProducts,
     AxiosError<errorMessageResponse>
   >({
-    url: "/products",
+    url: `/products?limit=${limitData}`,
     method: "GET",
   });
+
+  const handleLoadButton = React.useCallback(() => {
+    setLimitData((n) => n + 1);
+  }, []);
+
   return (
     <section className="w-full h-full flex flex-col justify-center items-start py-8">
       <SearchProducts />
       {isSuccess && (
-        <div className="place-items-center auto-cols-auto sm:columns-2 lg:columns-3 xl:columns-4 ">
-          {data?.products.map((product, index) => (
-            <CardProducts key={index} {...product} />
-          ))}
-        </div>
+        <>
+          <div className="place-items-center w-full h-full auto-cols-auto sm:columns-2 lg:columns-3 xl:columns-4 ">
+            {data?.products.map((product, index) => (
+              <CardProducts key={index} {...product} />
+            ))}
+          </div>
+
+          <Button onClick={handleLoadButton}>Load More</Button>
+        </>
       )}
 
       {isLoading && <h1>loading data...</h1>}
